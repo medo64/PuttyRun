@@ -8,6 +8,11 @@ namespace PuttyRun {
 
         public static Boolean Installed {
             get { return Medo.Configuration.Settings.Read("Installed", false); }
+            set {
+                Medo.Configuration.Settings.Write("Installed", value);
+                Medo.Configuration.Settings.NoRegistryWrites = !value;
+                Medo.Windows.Forms.State.NoRegistryWrites = !value;
+            }
         }
 
         public static Boolean NoRegistryWrites { get { return !Settings.Installed; } }

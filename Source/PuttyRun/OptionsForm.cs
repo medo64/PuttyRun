@@ -8,11 +8,16 @@ namespace PuttyRun {
         public OptionsForm() {
             InitializeComponent();
             this.Font = SystemFonts.MessageBoxFont;
-            btnPuttyBrowse.Font = new Font(SystemFonts.MessageBoxFont.Name, SystemFonts.MessageBoxFont.SizeInPoints / 2, FontStyle.Italic);
+            btnPuttyExeBrowse.Font = new Font(SystemFonts.MessageBoxFont.Name, SystemFonts.MessageBoxFont.SizeInPoints / 2, FontStyle.Italic);
         }
 
 
         private void Form_Load(object sender, System.EventArgs e) {
+            if (Settings.NoRegistryWrites) {
+                SetControlState(false);
+                btnAllowRegistry.Visible = true;
+            }
+
             if (Tray.Hotkey.IsRegistered) { Tray.Hotkey.Unregister(); }
 
             chbRunOnStartup.Checked = Settings.RunOnStartup;
@@ -20,7 +25,7 @@ namespace PuttyRun {
             txtHotkey.Text = (Settings.ActivationHotkey != Keys.None) ? Helpers.GetKeyString(Settings.ActivationHotkey) : "";
             txtHotkey.Tag = Settings.ActivationHotkey;
 
-            txtPutty.Text = Settings.PuttyExecutable;
+            txtPuttyExe.Text = Settings.PuttyExecutable;
         }
 
         private void Form_FormClosing(object sender, FormClosingEventArgs e) {
@@ -44,11 +49,20 @@ namespace PuttyRun {
                 Settings.ActivationHotkey = newKey;
             }
 
-            txtPutty.Text = txtPutty.Text.Trim();
-            if (!string.Equals(Settings.PuttyExecutable, txtPutty.Text, System.StringComparison.Ordinal)) {
-                Settings.PuttyExecutable = txtPutty.Text;
+            txtPuttyExe.Text = txtPuttyExe.Text.Trim();
+            if (!string.Equals(Settings.PuttyExecutable, txtPuttyExe.Text, System.StringComparison.Ordinal)) {
+                Settings.PuttyExecutable = txtPuttyExe.Text;
             }
         }
+
+        private void btnAllowRegistry_Click(object sender, EventArgs e) {
+            if (Medo.MessageBox.ShowQuestion(this, "Do you allow this program use of registry in order to save its settings?", MessageBoxButtons.YesNo) == DialogResult.Yes) {
+                btnAllowRegistry.Visible = false;
+                SetControlState(true);
+                Settings.Installed = true;
+            }
+        }
+
 
         private void txtHotkey_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e) {
             var key = e.KeyData;
@@ -78,6 +92,18 @@ namespace PuttyRun {
         private void txtHotkey_Leave(object sender, System.EventArgs e) {
             var key = (Keys)txtHotkey.Tag;
             txtHotkey.Text = Helpers.GetKeyString(key);
+        }
+
+
+
+        private void SetControlState(bool newState) {
+            chbRunOnStartup.Enabled = newState;
+            lblHotkey.Enabled = newState;
+            txtHotkey.Enabled = newState;
+            lblPuttyExe.Enabled = newState;
+            txtPuttyExe.Enabled = newState;
+            btnPuttyExeBrowse.Enabled = newState;
+            btnOK.Enabled = newState;
         }
 
     }

@@ -23,47 +23,48 @@
         /// the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent() {
-            this.txtPutty = new System.Windows.Forms.TextBox();
-            this.lblPutty = new System.Windows.Forms.Label();
-            this.btnPuttyBrowse = new System.Windows.Forms.Button();
+            this.txtPuttyExe = new System.Windows.Forms.TextBox();
+            this.lblPuttyExe = new System.Windows.Forms.Label();
+            this.btnPuttyExeBrowse = new System.Windows.Forms.Button();
             this.btnOK = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
             this.chbRunOnStartup = new System.Windows.Forms.CheckBox();
             this.lblHotkey = new System.Windows.Forms.Label();
             this.txtHotkey = new System.Windows.Forms.TextBox();
+            this.btnAllowRegistry = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
-            // txtPutty
+            // txtPuttyExe
             // 
-            this.txtPutty.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.txtPuttyExe.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtPutty.Location = new System.Drawing.Point(12, 125);
-            this.txtPutty.Margin = new System.Windows.Forms.Padding(3, 3, 0, 3);
-            this.txtPutty.Name = "txtPutty";
-            this.txtPutty.Size = new System.Drawing.Size(416, 22);
-            this.txtPutty.TabIndex = 5;
+            this.txtPuttyExe.Location = new System.Drawing.Point(12, 125);
+            this.txtPuttyExe.Margin = new System.Windows.Forms.Padding(3, 3, 0, 3);
+            this.txtPuttyExe.Name = "txtPuttyExe";
+            this.txtPuttyExe.Size = new System.Drawing.Size(416, 22);
+            this.txtPuttyExe.TabIndex = 5;
             // 
-            // lblPutty
+            // lblPuttyExe
             // 
-            this.lblPutty.AutoSize = true;
-            this.lblPutty.Location = new System.Drawing.Point(12, 105);
-            this.lblPutty.Margin = new System.Windows.Forms.Padding(3, 12, 3, 0);
-            this.lblPutty.Name = "lblPutty";
-            this.lblPutty.Size = new System.Drawing.Size(128, 17);
-            this.lblPutty.TabIndex = 4;
-            this.lblPutty.Text = "PuTTY executable:";
+            this.lblPuttyExe.AutoSize = true;
+            this.lblPuttyExe.Location = new System.Drawing.Point(12, 105);
+            this.lblPuttyExe.Margin = new System.Windows.Forms.Padding(3, 12, 3, 0);
+            this.lblPuttyExe.Name = "lblPuttyExe";
+            this.lblPuttyExe.Size = new System.Drawing.Size(128, 17);
+            this.lblPuttyExe.TabIndex = 4;
+            this.lblPuttyExe.Text = "PuTTY executable:";
             // 
-            // btnPuttyBrowse
+            // btnPuttyExeBrowse
             // 
-            this.btnPuttyBrowse.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnPuttyBrowse.Location = new System.Drawing.Point(428, 125);
-            this.btnPuttyBrowse.Margin = new System.Windows.Forms.Padding(0, 3, 3, 3);
-            this.btnPuttyBrowse.Name = "btnPuttyBrowse";
-            this.btnPuttyBrowse.Size = new System.Drawing.Size(22, 22);
-            this.btnPuttyBrowse.TabIndex = 6;
-            this.btnPuttyBrowse.Text = "...";
-            this.btnPuttyBrowse.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
-            this.btnPuttyBrowse.UseVisualStyleBackColor = true;
+            this.btnPuttyExeBrowse.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnPuttyExeBrowse.Location = new System.Drawing.Point(428, 125);
+            this.btnPuttyExeBrowse.Margin = new System.Windows.Forms.Padding(0, 3, 3, 3);
+            this.btnPuttyExeBrowse.Name = "btnPuttyExeBrowse";
+            this.btnPuttyExeBrowse.Size = new System.Drawing.Size(22, 22);
+            this.btnPuttyExeBrowse.TabIndex = 6;
+            this.btnPuttyExeBrowse.Text = "...";
+            this.btnPuttyExeBrowse.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
+            this.btnPuttyExeBrowse.UseVisualStyleBackColor = true;
             // 
             // btnOK
             // 
@@ -73,7 +74,7 @@
             this.btnOK.Margin = new System.Windows.Forms.Padding(3, 15, 3, 3);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(85, 25);
-            this.btnOK.TabIndex = 7;
+            this.btnOK.TabIndex = 8;
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
@@ -122,6 +123,17 @@
             this.txtHotkey.Leave += new System.EventHandler(this.txtHotkey_Leave);
             this.txtHotkey.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.txtHotkey_PreviewKeyDown);
             // 
+            // btnAllowRegistry
+            // 
+            this.btnAllowRegistry.Location = new System.Drawing.Point(12, 165);
+            this.btnAllowRegistry.Name = "btnAllowRegistry";
+            this.btnAllowRegistry.Size = new System.Drawing.Size(170, 25);
+            this.btnAllowRegistry.TabIndex = 7;
+            this.btnAllowRegistry.Text = "Allow saving settings";
+            this.btnAllowRegistry.UseVisualStyleBackColor = true;
+            this.btnAllowRegistry.Visible = false;
+            this.btnAllowRegistry.Click += new System.EventHandler(this.btnAllowRegistry_Click);
+            // 
             // OptionsForm
             // 
             this.AcceptButton = this.btnOK;
@@ -129,14 +141,15 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
             this.ClientSize = new System.Drawing.Size(462, 202);
+            this.Controls.Add(this.btnAllowRegistry);
             this.Controls.Add(this.txtHotkey);
             this.Controls.Add(this.lblHotkey);
             this.Controls.Add(this.chbRunOnStartup);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnOK);
-            this.Controls.Add(this.btnPuttyBrowse);
-            this.Controls.Add(this.lblPutty);
-            this.Controls.Add(this.txtPutty);
+            this.Controls.Add(this.btnPuttyExeBrowse);
+            this.Controls.Add(this.lblPuttyExe);
+            this.Controls.Add(this.txtPuttyExe);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
@@ -154,13 +167,14 @@
 
         #endregion
 
-        private System.Windows.Forms.TextBox txtPutty;
-        private System.Windows.Forms.Label lblPutty;
-        private System.Windows.Forms.Button btnPuttyBrowse;
+        private System.Windows.Forms.TextBox txtPuttyExe;
+        private System.Windows.Forms.Label lblPuttyExe;
+        private System.Windows.Forms.Button btnPuttyExeBrowse;
         private System.Windows.Forms.Button btnOK;
         private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.CheckBox chbRunOnStartup;
         private System.Windows.Forms.Label lblHotkey;
         private System.Windows.Forms.TextBox txtHotkey;
+        private System.Windows.Forms.Button btnAllowRegistry;
     }
 }
