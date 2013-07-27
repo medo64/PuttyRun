@@ -49,19 +49,17 @@ namespace PuttyRun {
                 case Keys.Escape: {
                         this.Close();
                     } break;
+                
                 case Keys.F5: {
                         mnuRefresh.PerformClick();
                     } break;
+
                 case Keys.Control | Keys.F: {
-                        using (var frm = new FilterForm(treeImages)) {
-                            if (frm.ShowDialog(this) == DialogResult.OK) {
-                                var node = FindNodeBySession(frm.SelectedSession, tree.Nodes);
-                                if (node != null) {
-                                    tree.SelectedNode = node;
-                                    mnuConnect.PerformClick();
-                                }
-                            }
-                        }
+                        Find(false);
+                    } break;
+
+                case Keys.Control | Keys.G: {
+                        Find(true);
                     } break;
             }
         }
@@ -234,6 +232,18 @@ namespace PuttyRun {
                 if ((node.Session != null) && node.Session.Equals(session)) { return node; }
             }
             return null;
+        }
+
+        private void Find(bool allowNumber) {
+            using (var frm = new FilterForm(treeImages, allowNumber)) {
+                if (frm.ShowDialog(this) == DialogResult.OK) {
+                    var node = FindNodeBySession(frm.SelectedSession, tree.Nodes);
+                    if (node != null) {
+                        tree.SelectedNode = node;
+                        mnuConnect.PerformClick();
+                    }
+                }
+            }
         }
 
     }

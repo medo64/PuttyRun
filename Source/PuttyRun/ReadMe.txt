@@ -17,6 +17,7 @@ SHORTCUT KEYS
     Esc                     Close
     F5                      Refresh
     Ctrl+F                  Find
+    Ctrl+G                  Goto
 
 
 LICENCE (MIT)

@@ -29,6 +29,7 @@
             this.colText = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.btnSelect = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
+            this.colNumber = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.SuspendLayout();
             // 
             // txtFilter
@@ -57,7 +58,8 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.list.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.colText});
+            this.colText,
+            this.colNumber});
             this.list.FullRowSelect = true;
             this.list.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
             this.list.HideSelection = false;
@@ -102,6 +104,12 @@
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             // 
+            // colNumber
+            // 
+            this.colNumber.Text = "#";
+            this.colNumber.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.colNumber.Width = 30;
+            // 
             // FilterForm
             // 
             this.AcceptButton = this.btnSelect;
@@ -135,5 +143,6 @@
         private System.Windows.Forms.Button btnSelect;
         private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.ColumnHeader colText;
+        private System.Windows.Forms.ColumnHeader colNumber;
     }
 }
