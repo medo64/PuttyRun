@@ -65,6 +65,12 @@
     <Compile Include="%28Medo%29\State [015].cs" />
     <Compile Include="%28Medo%29\UnhandledCatch [008].cs" />
     <Compile Include="%28Medo%29\Upgrade [002].cs" />
+    <Compile Include="FilterForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FilterForm.Designer.cs">
+      <DependentUpon>FilterForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Helpers.cs" />
     <Compile Include="OptionsForm.cs">
       <SubType>Form</SubType>
@@ -87,6 +93,9 @@
     <Compile Include="Settings.cs" />
     <Compile Include="ToolStripBorderlessProfessionalRenderer.cs" />
     <Compile Include="Tray.cs" />
+    <EmbeddedResource Include="FilterForm.resx">
+      <DependentUpon>FilterForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>

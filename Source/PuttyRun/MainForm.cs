@@ -45,12 +45,23 @@ namespace PuttyRun {
 
 
         private void Form_KeyDown(object sender, KeyEventArgs e) {
-            switch (e.KeyCode) {
+            switch (e.KeyData) {
                 case Keys.Escape: {
                         this.Close();
                     } break;
                 case Keys.F5: {
                         mnuRefresh.PerformClick();
+                    } break;
+                case Keys.Control | Keys.F: {
+                        using (var frm = new FilterForm(treeImages)) {
+                            if (frm.ShowDialog(this) == DialogResult.OK) {
+                                var node = FindNodeBySession(frm.SelectedSession, tree.Nodes);
+                                if (node != null) {
+                                    tree.SelectedNode = node;
+                                    mnuConnect.PerformClick();
+                                }
+                            }
+                        }
                     } break;
             }
         }
@@ -93,6 +104,16 @@ namespace PuttyRun {
                         mnuConnect.PerformClick();
                     }
                 }
+            }
+        }
+
+
+        private void tmrCheckPuttyExecutable_Tick(object sender, EventArgs e) {
+            if (Settings.PuttyExecutableExists) {
+                staWarningNoPutty.Visible = false;
+                tmrCheckPuttyExecutable.Enabled = false; //don't check once you find it first time.
+            } else {
+                if (!staWarningNoPutty.Visible) { staWarningNoPutty.Visible = true; }
             }
         }
 
@@ -141,7 +162,6 @@ namespace PuttyRun {
             }
         }
 
-        #region App
 
         private void mnuAppFeedback_Click(object sender, EventArgs e) {
             Medo.Diagnostics.ErrorReport.ShowDialog(this, null, new Uri("http://jmedved.com/feedback/"));
@@ -158,8 +178,6 @@ namespace PuttyRun {
         private void mnuAppAbout_Click(object sender, EventArgs e) {
             Medo.Windows.Forms.AboutBox.ShowDialog(this, new Uri("http://jmedved.com/puttyrun/"));
         }
-
-        #endregion
 
         #endregion
 
@@ -210,13 +228,12 @@ namespace PuttyRun {
 
         #endregion
 
-        private void tmrCheckPuttyExecutable_Tick(object sender, EventArgs e) {
-            if (Settings.PuttyExecutableExists) {
-                staWarningNoPutty.Visible = false;
-                tmrCheckPuttyExecutable.Enabled = false; //don't check once you find it first time.
-            } else {
-                if (!staWarningNoPutty.Visible) { staWarningNoPutty.Visible = true; }
+
+        private PuttyNode FindNodeBySession(PuttySession session, TreeNodeCollection nodes) {
+            foreach (PuttyNode node in nodes) {
+                if ((node.Session != null) && node.Session.Equals(session)) { return node; }
             }
+            return null;
         }
 
     }
