@@ -19,6 +19,12 @@ namespace PuttyRun {
         }
 
 
+        public static Boolean ShowBalloonOnNextMinimize {
+            get { return Medo.Configuration.Settings.Read("ShowBalloonOnNextMinimize", true); }
+            set { Medo.Configuration.Settings.Write("ShowBalloonOnNextMinimize", value); }
+        }
+
+
         private static readonly Medo.Configuration.RunOnStartup RunOnStartupConfig = new Medo.Configuration.RunOnStartup(Medo.Configuration.RunOnStartup.Current.Title, Medo.Configuration.RunOnStartup.Current.ExecutablePath, "/hide");
 
         public static Boolean RunOnStartup {

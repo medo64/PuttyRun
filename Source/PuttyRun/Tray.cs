@@ -66,5 +66,17 @@ namespace PuttyRun {
             }
         }
 
+
+        internal static void ShowBalloonOnMinimize() {
+            if (Settings.ShowBalloonOnNextMinimize) {
+                Settings.ShowBalloonOnNextMinimize = false;
+                var text = "Program continues to run in background.";
+                if (Tray.Hotkey.IsRegistered) {
+                    text += "\n\nPress " + Helpers.GetKeyString(Tray.Hotkey.Key) + " to show window again.";
+                }
+                Tray.Icon.ShowBalloonTip(0, "PuTTY Run", text, ToolTipIcon.Info);
+            }
+        }
+
     }
 }

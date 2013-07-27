@@ -12,7 +12,6 @@ namespace PuttyRun {
             this.Font = SystemFonts.MessageBoxFont;
             mnu.Renderer = new ToolStripBorderlessProfessionalRenderer();
 
-            Medo.Windows.Forms.State.NoRegistryWrites = Settings.NoRegistryWrites;
             Medo.Windows.Forms.State.SetupOnLoadAndClose(this);
         }
 
@@ -34,6 +33,7 @@ namespace PuttyRun {
                 default:
                     e.Cancel = true;
                     this.Hide();
+                    Tray.ShowBalloonOnMinimize();
                     break;
             }
 #endif
@@ -117,6 +117,8 @@ namespace PuttyRun {
                         var process = new Process() { StartInfo = psi };
                         process.Start();
                     }
+
+                    if (Control.ModifierKeys != Keys.Shift) { this.Close(); }
                 } catch (InvalidOperationException ex) {
                     Medo.MessageBox.ShowError(this, ex.Message);
                 }
