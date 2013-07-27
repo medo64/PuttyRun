@@ -4,7 +4,7 @@ using System.Drawing;
 using System.Windows.Forms;
 
 namespace PuttyRun {
-    public partial class OptionsForm : Form {
+    internal partial class OptionsForm : Form {
         public OptionsForm() {
             InitializeComponent();
             this.Font = SystemFonts.MessageBoxFont;

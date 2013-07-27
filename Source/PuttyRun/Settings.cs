@@ -1,4 +1,5 @@
-﻿using System;
+using Microsoft.Win32;
+using System;
 using System.Diagnostics;
 using System.IO;
 using System.Windows.Forms;
@@ -9,9 +10,21 @@ namespace PuttyRun {
         public static Boolean Installed {
             get { return Medo.Configuration.Settings.Read("Installed", false); }
             set {
-                Medo.Configuration.Settings.Write("Installed", value);
-                Medo.Configuration.Settings.NoRegistryWrites = !value;
-                Medo.Windows.Forms.State.NoRegistryWrites = !value;
+                if (value) { //enable writing
+                    Medo.Configuration.Settings.NoRegistryWrites = false;
+                    Medo.Windows.Forms.State.NoRegistryWrites = false;
+                    Medo.Configuration.Settings.Write("Installed", 1);
+                } else {
+                    try {
+                        using (var key = Registry.CurrentUser.OpenSubKey(@"Software\Josip Medved", true)) {
+                            key.DeleteSubKeyTree(Medo.Reflection.EntryAssembly.Product);
+                        }
+                    } catch (Exception) {
+                        Medo.Configuration.Settings.Write("Installed", 0);
+                    }
+                    Medo.Configuration.Settings.NoRegistryWrites = true;
+                    Medo.Windows.Forms.State.NoRegistryWrites = true;
+                }
             }
         }
 
