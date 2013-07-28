@@ -269,7 +269,10 @@ namespace PuttyRun {
             foreach (var sessionNode in PuttyNode.GetSessionNodes()) {
                 GetFolderNode(sessionNode.Session.Folder);
             }
+
+            PuttyNode firstNode = null;
             foreach (var sessionNode in PuttyNode.GetSessionNodes()) {
+                if (firstNode == null) { firstNode = sessionNode; }
                 var folderNode = GetFolderNode(sessionNode.Session.Folder);
                 if (folderNode != null) {
                     folderNode.Nodes.Add(sessionNode);
@@ -278,7 +281,7 @@ namespace PuttyRun {
                 }
             }
             tree.ExpandAll();
-            tree.SelectedNode = tree.Nodes[0];
+            tree.SelectedNode = firstNode;
         }
 
         private PuttyNode GetFolderNode(string folderName) {
