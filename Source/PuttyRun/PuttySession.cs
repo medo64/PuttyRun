@@ -268,17 +268,23 @@ namespace PuttyRun {
         #region Static
 
         public static IEnumerable<PuttySession> GetSessions() {
-            var sessionNames = new List<String>();
+            var sessions = new List<PuttySession>();
             using (var root = Registry.CurrentUser.OpenSubKey(RegistrySessionRoot)) {
                 if (root != null) {
                     foreach (var sessionName in root.GetSubKeyNames()) {
-                        sessionNames.Add(sessionName);
+                        sessions.Add(new PuttySession(sessionName));
                     }
                 }
             }
-            sessionNames.Sort();
-            foreach (var sessionName in sessionNames) {
-                yield return new PuttySession(sessionName);
+            sessions.Sort(delegate(PuttySession item1, PuttySession item2) {
+                if (item1.IsDefault != item2.IsDefault) {
+                    if (item1.IsDefault) { return -1; }
+                    if (item2.IsDefault) { return +1; }
+                }
+                return string.Compare(item1.FullSessionText, item2.FullSessionText, StringComparison.CurrentCultureIgnoreCase);
+            });
+            foreach (var session in sessions) {
+                yield return session;
             }
         }
 
