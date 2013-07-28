@@ -229,7 +229,12 @@ namespace PuttyRun {
 
         private PuttyNode FindNodeBySession(PuttySession session, TreeNodeCollection nodes) {
             foreach (PuttyNode node in nodes) {
-                if ((node.Session != null) && node.Session.Equals(session)) { return node; }
+                if (node.IsFolder) {
+                    var foundNode = FindNodeBySession(session, node.Nodes);
+                    if (foundNode != null) { return foundNode; }
+                } else {
+                    if (node.Session.Equals(session)) { return node; }
+                }
             }
             return null;
         }
@@ -240,7 +245,6 @@ namespace PuttyRun {
                     var node = FindNodeBySession(frm.SelectedSession, tree.Nodes);
                     if (node != null) {
                         tree.SelectedNode = node;
-                        mnuConnect.PerformClick();
                     }
                 }
             }
