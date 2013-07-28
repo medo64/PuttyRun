@@ -1,6 +1,7 @@
-﻿using Microsoft.Win32;
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.Text;
 
@@ -8,24 +9,39 @@ namespace PuttyRun {
     internal class PuttySession {
 
         private PuttySession(string sessionName) {
-            this.SessionName = sessionName;
+            this.FullSessionName = sessionName;
         }
 
 
         #region Basic properties
 
-        public String FullSessionName { get; private set; }
-
-        public string SessionText {
-            get {
-                return DecodeText(this.SessionName);
+        private String _FullSessionName;
+        public String FullSessionName {
+            get { return this._FullSessionName; }
+            private set {
+                if (this._FullSessionName != null) { //rename
+                    RenameRegistrySession(this._FullSessionName, value);
+                }
+                this._FullSessionName = value;
             }
         }
+
+        public string FullSessionText {
+            get { return DecodeText(this.FullSessionName); }
+            set {
+                if (this.IsDefault) { throw new InvalidOperationException("Cannot rename Default Settings."); }
+                Debug.WriteLine("V: Session rename: '" + this.FullSessionText + "' => '" + value + "'.");
+                this.FullSessionName = EncodeText(value);
+            }
+        }
+
+        public Boolean IsDefault { get { return this.FullSessionText.Equals("Default Settings", StringComparison.Ordinal); } }
+
 
         public String Folder {
             get {
                 string folder, name;
-                ExtractFolderAndName(this.SessionName, out folder, out name);
+                ExtractFolderAndName(this.FullSessionName, out folder, out name);
                 return folder;
             }
         }
@@ -33,10 +49,11 @@ namespace PuttyRun {
         public String Name {
             get {
                 string folder, name;
-                ExtractFolderAndName(this.SessionName, out folder, out name);
+                ExtractFolderAndName(this.FullSessionName, out folder, out name);
                 return name;
             }
         }
+
 
         #region Extract
 
@@ -185,7 +202,7 @@ namespace PuttyRun {
         private static readonly String RegistrySessionRoot = @"Software\SimonTatham\PuTTY\Sessions";
 
         private string GetRegistryString(string valueName) {
-            using (var root = Registry.CurrentUser.OpenSubKey(RegistrySessionRoot + "\\" + this.SessionName)) {
+            using (var root = Registry.CurrentUser.OpenSubKey(RegistrySessionRoot + "\\" + this.FullSessionName)) {
                 if (root != null) {
                     return root.GetValue(valueName) as string;
                 } else {
@@ -195,7 +212,7 @@ namespace PuttyRun {
         }
 
         private void SetRegistryString(string valueName, string value) {
-            using (var root = Registry.CurrentUser.OpenSubKey(RegistrySessionRoot + "\\" + this.SessionName, true)) {
+            using (var root = Registry.CurrentUser.OpenSubKey(RegistrySessionRoot + "\\" + this.FullSessionName, true)) {
                 if (root != null) {
                     root.DeleteValue(valueName, false);
                     root.SetValue(valueName, value);
@@ -205,18 +222,40 @@ namespace PuttyRun {
             }
         }
 
+
+        private void RenameRegistrySession(string oldSessionName, string newSessionName) {
+            if (string.Equals(oldSessionName, newSessionName, StringComparison.Ordinal)) { //ignore same name
+                return;
+            } else if (string.Equals(oldSessionName, newSessionName, StringComparison.OrdinalIgnoreCase)) { //use temp key for case changes
+                RenameRegistrySession(oldSessionName, oldSessionName + " TEMP");
+                oldSessionName += " TEMP";
+            }
+
+            using (var sessionKey = Registry.CurrentUser.OpenSubKey(RegistrySessionRoot, true)) {
+                using (var oldKey = sessionKey.OpenSubKey(oldSessionName))
+                using (var newKey = sessionKey.CreateSubKey(newSessionName)) {
+                    foreach (var valueName in oldKey.GetValueNames()) {
+                        var valueKind = oldKey.GetValueKind(valueName);
+                        var value = oldKey.GetValue(valueName);
+                        newKey.SetValue(valueName, value, valueKind);
+                    }
+                }
+                sessionKey.DeleteSubKey(oldSessionName);
+            }
+        }
+
         #endregion
 
 
         #region Overrides
 
         public override int GetHashCode() {
-            return this.SessionName.GetHashCode();
+            return this.FullSessionName.GetHashCode();
         }
 
         public override bool Equals(object obj) {
             var other = obj as PuttySession;
-            return (other != null) && (this.SessionName.Equals(other.SessionName));
+            return (other != null) && (this.FullSessionName.Equals(other.FullSessionName));
         }
 
         public override string ToString() {

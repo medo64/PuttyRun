@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
-using System.IO;
+using System.Globalization;
+using System.Text;
 using System.Windows.Forms;
 
 namespace PuttyRun {
@@ -11,6 +12,8 @@ namespace PuttyRun {
             InitializeComponent();
             this.Font = SystemFonts.MessageBoxFont;
             mnu.Renderer = new ToolStripBorderlessProfessionalRenderer();
+
+            tree.TreeViewNodeSorter = new Helpers.NodeSorter();
 
             Medo.Windows.Forms.State.SetupOnLoadAndClose(this);
         }
@@ -49,7 +52,11 @@ namespace PuttyRun {
                 case Keys.Escape: {
                         this.Close();
                     } break;
-                
+
+                case Keys.F2: {
+                        mnuRename.PerformClick();
+                    } break;
+
                 case Keys.F5: {
                         mnuRefresh.PerformClick();
                     } break;
@@ -70,10 +77,38 @@ namespace PuttyRun {
 
             var isFolder = (node != null) && node.IsFolder;
             var isConnection = (node != null) && node.IsConnection;
+            var isDefaultConnection = (node != null) && node.IsDefaultConnection;
             var canConnect = isConnection && node.Session.HasBasicParameters;
-            var canModify = isConnection && !node.Session.SessionText.Equals("Default Settings", StringComparison.InvariantCulture);
 
             mnuConnect.Enabled = canConnect;
+            mnuRename.Enabled = !isDefaultConnection;
+        }
+
+        private void tree_BeforeLabelEdit(object sender, NodeLabelEditEventArgs e) {
+            var node = e.Node as PuttyNode;
+            e.CancelEdit = node.IsDefaultConnection;
+        }
+
+        private void tree_AfterLabelEdit(object sender, NodeLabelEditEventArgs e) {
+            if (e.Label == null) { return; } //nothing has changed
+            e.CancelEdit = true; //because we will change name ourself
+
+            var newText = e.Label.Trim();
+            if (newText.Length == 0) { return; } //don't allow empty names
+
+            var currNode = e.Node as PuttyNode;
+            if (currNode != null) {
+                var nodes = (currNode.Parent == null) ? tree.Nodes : currNode.Parent.Nodes;
+                foreach (PuttyNode node in nodes) {
+                    if ((node != currNode) && string.Equals(newText, node.Text, StringComparison.Ordinal)) {
+                        return; //name already exists
+                    }
+                }
+            }
+
+            //rename all kids
+            currNode.Text = newText;
+            RenameNodeAndKids(currNode);
         }
 
         private void tree_KeyDown(object sender, KeyEventArgs e) {
@@ -131,7 +166,7 @@ namespace PuttyRun {
 
                     if (Settings.PuttyExecutableExists) {
                         var psi = new ProcessStartInfo(Settings.PuttyExecutable);
-                        psi.Arguments = "-load \"" + node.Session.SessionText + "\"";
+                        psi.Arguments = "-load \"" + node.Session.FullSessionText + "\"";
                         psi.WindowStyle = Settings.PuttyWindowStyle;
                         var process = new Process() { StartInfo = psi };
                         process.Start();
@@ -143,6 +178,49 @@ namespace PuttyRun {
                 }
             }
 
+        }
+
+
+        private void mnuNewFolder_Click(object sender, EventArgs e) {
+            var parentNode = tree.SelectedNode as PuttyNode;
+            while (parentNode != null) {
+                if (parentNode.IsFolder) { break; }
+                parentNode = parentNode.Parent as PuttyNode;
+            }
+
+            var baseFolderName = "New folder";
+            var folderName = baseFolderName;
+            bool isOk;
+            var folderIndex = 1;
+            var nodes = (parentNode == null) ? tree.Nodes : parentNode.Nodes;
+            do {
+                isOk = true;
+                foreach (PuttyNode node in nodes) {
+                    if (string.Equals(folderName, node.Text, StringComparison.InvariantCultureIgnoreCase)) {
+                        isOk = false;
+                    }
+                }
+                if (!isOk) {
+                    folderIndex += 1;
+                    folderName = baseFolderName + " (" + folderIndex.ToString(CultureInfo.CurrentCulture) + ")";
+                }
+            } while (!isOk);
+
+            var newNode = new PuttyNode(folderName);
+            if (parentNode == null) {
+                tree.Nodes.Add(newNode);
+            } else {
+                parentNode.Nodes.Add(newNode);
+            }
+
+            if ((parentNode != null) && !parentNode.IsExpanded) { parentNode.Expand(); }
+            tree.SelectedNode = newNode;
+            newNode.BeginEdit();
+        }
+
+        private void mnuRename_Click(object sender, EventArgs e) {
+            var node = tree.SelectedNode as PuttyNode;
+            if (node != null) { node.BeginEdit(); }
         }
 
 
@@ -248,6 +326,22 @@ namespace PuttyRun {
                     }
                 }
             }
+        }
+
+        private void RenameNodeAndKids(PuttyNode node) {
+            if (node.Session != null) { node.Session.FullSessionText = GetFullPath(node); }
+            foreach (PuttyNode item in node.Nodes) {
+                RenameNodeAndKids(item);
+            }
+        }
+
+        private string GetFullPath(PuttyNode node) {
+            var sb = new StringBuilder(node.Text);
+            while (node.Parent != null) {
+                node = node.Parent as PuttyNode;
+                sb.Insert(0, node.Text + @"\");
+            }
+            return sb.ToString();
         }
 
     }

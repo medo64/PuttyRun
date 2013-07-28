@@ -15,6 +15,7 @@ PUTTY EXECUTABLE
 SHORTCUT KEYS
 
     Esc                     Close
+    F2                      Rename
     F5                      Refresh
     Ctrl+F                  Find
     Ctrl+G                  Goto

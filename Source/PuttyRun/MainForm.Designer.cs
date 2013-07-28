@@ -28,6 +28,9 @@
             this.mnu = new System.Windows.Forms.ToolStrip();
             this.mnuConnect = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.mnuNewFolder = new System.Windows.Forms.ToolStripButton();
+            this.mnuRename = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.mnuRefresh = new System.Windows.Forms.ToolStripButton();
             this.mnuApp = new System.Windows.Forms.ToolStripDropDownButton();
             this.mnuAppFeedback = new System.Windows.Forms.ToolStripMenuItem();
@@ -51,6 +54,9 @@
             this.mnu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.mnuConnect,
             this.toolStripSeparator1,
+            this.mnuNewFolder,
+            this.mnuRename,
+            this.toolStripSeparator2,
             this.mnuRefresh,
             this.mnuApp,
             this.mnuOptions});
@@ -75,6 +81,32 @@
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
             this.toolStripSeparator1.Size = new System.Drawing.Size(6, 27);
+            // 
+            // mnuNewFolder
+            // 
+            this.mnuNewFolder.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.mnuNewFolder.Image = ((System.Drawing.Image)(resources.GetObject("mnuNewFolder.Image")));
+            this.mnuNewFolder.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.mnuNewFolder.Name = "mnuNewFolder";
+            this.mnuNewFolder.Size = new System.Drawing.Size(23, 24);
+            this.mnuNewFolder.Text = "New folder";
+            this.mnuNewFolder.Click += new System.EventHandler(this.mnuNewFolder_Click);
+            // 
+            // mnuRename
+            // 
+            this.mnuRename.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.mnuRename.Image = ((System.Drawing.Image)(resources.GetObject("mnuRename.Image")));
+            this.mnuRename.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.mnuRename.Name = "mnuRename";
+            this.mnuRename.Size = new System.Drawing.Size(23, 24);
+            this.mnuRename.Text = "Rename";
+            this.mnuRename.ToolTipText = "Rename (F2)";
+            this.mnuRename.Click += new System.EventHandler(this.mnuRename_Click);
+            // 
+            // toolStripSeparator2
+            // 
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 27);
             // 
             // mnuRefresh
             // 
@@ -155,6 +187,7 @@
             this.tree.HideSelection = false;
             this.tree.ImageIndex = 6;
             this.tree.ImageList = this.treeImages;
+            this.tree.LabelEdit = true;
             this.tree.Location = new System.Drawing.Point(0, 27);
             this.tree.Name = "tree";
             this.tree.SelectedImageIndex = 6;
@@ -162,6 +195,8 @@
             this.tree.ShowNodeToolTips = true;
             this.tree.Size = new System.Drawing.Size(302, 366);
             this.tree.TabIndex = 1;
+            this.tree.BeforeLabelEdit += new System.Windows.Forms.NodeLabelEditEventHandler(this.tree_BeforeLabelEdit);
+            this.tree.AfterLabelEdit += new System.Windows.Forms.NodeLabelEditEventHandler(this.tree_AfterLabelEdit);
             this.tree.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.tree_AfterSelect);
             this.tree.NodeMouseDoubleClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.tree_NodeMouseDoubleClick);
             this.tree.KeyDown += new System.Windows.Forms.KeyEventHandler(this.tree_KeyDown);
@@ -248,6 +283,9 @@
         private System.Windows.Forms.StatusStrip staWarningNoPutty;
         private System.Windows.Forms.ToolStripStatusLabel staWarningNoPuttyLabel;
         private System.Windows.Forms.Timer tmrCheckPuttyExecutable;
+        private System.Windows.Forms.ToolStripButton mnuNewFolder;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
+        private System.Windows.Forms.ToolStripButton mnuRename;
     }
 }
 

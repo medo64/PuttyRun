@@ -22,14 +22,15 @@ namespace PuttyRun {
         }
 
 
-        public Boolean IsConnection { get { return (this.Session != null); } }
         public Boolean IsFolder { get { return (this.Session == null); } }
+        public Boolean IsConnection { get { return (this.Session != null); } }
+        public Boolean IsDefaultConnection { get { return (this.Session != null) && this.Session.IsDefault; } }
 
         public PuttySession Session { get; private set; }
 
 
         public override int GetHashCode() {
-            return this.Session.SessionName.GetHashCode();
+            return this.Session.FullSessionName.GetHashCode();
         }
 
         public override bool Equals(object obj) {
