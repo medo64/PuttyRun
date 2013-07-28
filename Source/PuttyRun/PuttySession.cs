@@ -14,7 +14,7 @@ namespace PuttyRun {
 
         #region Basic properties
 
-        public String SessionName { get; set; }
+        public String FullSessionName { get; private set; }
 
         public string SessionText {
             get {
@@ -40,35 +40,67 @@ namespace PuttyRun {
 
         #region Extract
 
+        private static readonly Encoding SystemCodePage = Encoding.GetEncoding(0);
+
         private static string DecodeText(string sessionName) {
-            var sbSessionName = new StringBuilder();
-            var encodedCharValue = (byte)0;
-            var state = ExtractFolderAndNameState.CopyChar;
-            foreach (var ch in sessionName) {
+            var decodedBytes = new List<byte>();
+
+            var encodedByteValue = (byte)0;
+            var state = ExtractFolderAndNameState.CopyByte;
+            foreach (var b in SystemCodePage.GetBytes(sessionName)) {
                 switch (state) {
-                    case ExtractFolderAndNameState.CopyChar: {
-                            if (ch == '%') {
-                                state = ExtractFolderAndNameState.EncodedChar1;
+                    case ExtractFolderAndNameState.CopyByte: {
+                            if (b == 0x25) { //%
+                                state = ExtractFolderAndNameState.EncodedByte1;
                             } else {
-                                sbSessionName.Append(ch);
+                                decodedBytes.Add(b);
                             }
                         } break;
 
-                    case ExtractFolderAndNameState.EncodedChar1: {
-                            encodedCharValue = byte.Parse(ch.ToString(), NumberStyles.HexNumber, CultureInfo.InvariantCulture);
-                            state = ExtractFolderAndNameState.EncodedChar2;
+                    case ExtractFolderAndNameState.EncodedByte1: {
+                            encodedByteValue = byte.Parse(Convert.ToChar(b).ToString(), NumberStyles.HexNumber, CultureInfo.InvariantCulture);
+                            state = ExtractFolderAndNameState.EncodedByte2;
                         } break;
 
-                    case ExtractFolderAndNameState.EncodedChar2: {
-                            encodedCharValue = (byte)(encodedCharValue * 16 + +byte.Parse(ch.ToString(), NumberStyles.HexNumber, CultureInfo.InvariantCulture));
-                            sbSessionName.Append(ASCIIEncoding.ASCII.GetString(new byte[] { encodedCharValue }));
-                            state = ExtractFolderAndNameState.CopyChar;
+                    case ExtractFolderAndNameState.EncodedByte2: {
+                            encodedByteValue = (byte)(encodedByteValue * 16 + +byte.Parse(Convert.ToChar(b).ToString(), NumberStyles.HexNumber, CultureInfo.InvariantCulture));
+                            decodedBytes.Add(encodedByteValue);
+                            state = ExtractFolderAndNameState.CopyByte;
                         } break;
 
                 }
             }
 
-            return sbSessionName.ToString();
+            return SystemCodePage.GetString(decodedBytes.ToArray());
+        }
+
+        private static string EncodeText(string sessionText) { //PuTTY's WINSTORE.C
+            var sb = new StringBuilder();
+
+            foreach (byte b in SystemCodePage.GetBytes(sessionText)) {
+                switch (b) {
+                    case 0x20: //' '
+                    case 0x5C: //'\'
+                    case 0x2A: //'*'
+                    case 0x3F: //'?'
+                    case 0x25: //'%'
+                        sb.Append("%");
+                        sb.Append(b.ToString("X2", CultureInfo.InvariantCulture));
+                        break;
+
+                    default:
+                        if ((b < 0x20) || (b > 0x7E) //too low or too high
+                         || ((sb.Length == 0) && (b == 0x2E))) { //first dot (.)
+                            sb.Append("%");
+                            sb.Append(b.ToString("X2", CultureInfo.InvariantCulture));
+                        } else {
+                            sb.Append(Convert.ToChar(b));
+                        }
+                        break;
+                }
+            }
+
+            return sb.ToString();
         }
 
         private static void ExtractFolderAndName(string sessionName, out string folder, out string name) {
@@ -85,7 +117,7 @@ namespace PuttyRun {
         }
 
         private enum ExtractFolderAndNameState {
-            CopyChar, EncodedChar1, EncodedChar2
+            CopyByte, EncodedByte1, EncodedByte2
         }
 
         #endregion
