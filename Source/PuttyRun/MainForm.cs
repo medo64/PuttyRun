@@ -115,6 +115,54 @@ namespace PuttyRun {
             }), currNode);
         }
 
+
+        private void tree_ItemDrag(object sender, ItemDragEventArgs e) {
+            var node = e.Item as PuttyNode;
+            Debug.WriteLine("V: MainForm Tree ItemDrag: '" + node.Text + "'.");
+            if (!node.IsDefaultConnection) {
+                this.DoDragDrop(node, DragDropEffects.Move);
+            }
+        }
+
+        private void tree_DragOver(object sender, DragEventArgs e) {
+            var fromNode = e.Data.GetData("PuttyRun.PuttyNode") as PuttyNode;
+            if (fromNode == null) { return; }
+
+            var dropNode = tree.GetNodeAt(tree.PointToClient(new Point(e.X, e.Y))) as PuttyNode;
+            while ((dropNode != null) && !dropNode.IsFolder) { dropNode = dropNode.Parent as PuttyNode; }
+
+            Debug.WriteLine("V: MainForm Tree DragOver: '" + fromNode.Text + "' -> '" + ((dropNode != null) ? dropNode.Text : "") + "'.");
+
+            var noCommonParent = (fromNode.Parent != dropNode);
+            while (noCommonParent && (dropNode != null)) {
+                if (fromNode == dropNode) { noCommonParent = false; } //to avoid loops
+                dropNode = dropNode.Parent as PuttyNode;
+            }
+
+            e.Effect = noCommonParent ? DragDropEffects.Move : DragDropEffects.None;
+        }
+
+        private void tree_DragDrop(object sender, DragEventArgs e) {
+            var fromNode = e.Data.GetData("PuttyRun.PuttyNode") as PuttyNode;
+            var dropNode = tree.GetNodeAt(tree.PointToClient(new Point(e.X, e.Y))) as PuttyNode;
+            while ((dropNode != null) && !dropNode.IsFolder) { dropNode = dropNode.Parent as PuttyNode; }
+
+            Debug.WriteLine("V: MainForm Tree DragDrop: '" + fromNode.Text + "' => '" + ((dropNode != null) ? dropNode.Text : "") + "'.");
+
+            var fromParentNodes = (fromNode.Parent != null) ? fromNode.Parent.Nodes : tree.Nodes;
+            fromParentNodes.Remove(fromNode);
+            if (dropNode == null) {
+                tree.Nodes.Add(fromNode);
+            } else {
+                dropNode.Nodes.Add(fromNode);
+            }
+            RenameNodeAndKids(fromNode);
+
+            tree.Sort();
+            tree.SelectedNode = fromNode;
+        }
+
+
         private void tree_KeyDown(object sender, KeyEventArgs e) {
             var node = tree.SelectedNode as PuttyNode;
             if ((e.KeyCode == Keys.Enter) || (e.KeyCode == Keys.Space)) {

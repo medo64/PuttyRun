@@ -181,6 +181,7 @@
             // 
             // tree
             // 
+            this.tree.AllowDrop = true;
             this.tree.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.tree.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tree.FullRowSelect = true;
@@ -197,8 +198,11 @@
             this.tree.TabIndex = 1;
             this.tree.BeforeLabelEdit += new System.Windows.Forms.NodeLabelEditEventHandler(this.tree_BeforeLabelEdit);
             this.tree.AfterLabelEdit += new System.Windows.Forms.NodeLabelEditEventHandler(this.tree_AfterLabelEdit);
+            this.tree.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.tree_ItemDrag);
             this.tree.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.tree_AfterSelect);
             this.tree.NodeMouseDoubleClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.tree_NodeMouseDoubleClick);
+            this.tree.DragDrop += new System.Windows.Forms.DragEventHandler(this.tree_DragDrop);
+            this.tree.DragOver += new System.Windows.Forms.DragEventHandler(this.tree_DragOver);
             this.tree.KeyDown += new System.Windows.Forms.KeyEventHandler(this.tree_KeyDown);
             this.tree.MouseDown += new System.Windows.Forms.MouseEventHandler(this.tree_MouseDown);
             // 
