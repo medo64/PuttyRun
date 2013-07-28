@@ -48,7 +48,7 @@ namespace PuttyRun {
                 if (node1.IsFolder == node2.IsFolder) {
                     if (node1.IsDefaultConnection) { return -1; }
                     if (node2.IsDefaultConnection) { return +1; }
-                    return string.Compare(node1.Name, node2.Name, StringComparison.CurrentCulture);
+                    return string.Compare(node1.Text, node2.Text, StringComparison.CurrentCultureIgnoreCase);
                 } else {
                     return node1.IsFolder ? -1 : +1;
                 }

@@ -109,6 +109,10 @@ namespace PuttyRun {
             //rename all kids
             currNode.Text = newText;
             RenameNodeAndKids(currNode);
+            tree.BeginInvoke(new Action<PuttyNode>(delegate(PuttyNode node) {
+                tree.Sort();
+                tree.SelectedNode = node;
+            }), currNode);
         }
 
         private void tree_KeyDown(object sender, KeyEventArgs e) {
