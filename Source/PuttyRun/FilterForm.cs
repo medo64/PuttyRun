@@ -93,7 +93,7 @@ namespace PuttyRun {
 
         private void list_SelectedIndexChanged(object sender, EventArgs e) {
             var selectedSession = (list.SelectedItems.Count > 0) ? (PuttySession)(list.SelectedItems[0].Tag) : null;
-            btnSelect.Enabled = (selectedSession != null) && selectedSession.HasBasicParameters;
+            btnSelect.Enabled = (selectedSession != null);
         }
 
 
