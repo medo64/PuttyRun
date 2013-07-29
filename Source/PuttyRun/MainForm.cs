@@ -110,8 +110,10 @@ namespace PuttyRun {
             currNode.Text = newText;
             RenameNodeAndKids(currNode);
             tree.BeginInvoke(new Action<PuttyNode>(delegate(PuttyNode node) {
+                tree.BeginUpdate();
                 tree.Sort();
                 tree.SelectedNode = node;
+                tree.EndUpdate();
             }), currNode);
         }
 
@@ -158,8 +160,10 @@ namespace PuttyRun {
             }
             RenameNodeAndKids(fromNode);
 
+            tree.BeginUpdate();
             tree.Sort();
             tree.SelectedNode = fromNode;
+            tree.EndUpdate();
         }
 
 
