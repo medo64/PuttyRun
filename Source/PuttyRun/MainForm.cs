@@ -40,6 +40,7 @@ namespace PuttyRun {
                     break;
             }
 #endif
+            Medo.Windows.Forms.State.Save(this);
         }
 
         private void Form_FormClosed(object sender, FormClosedEventArgs e) {
