@@ -2,33 +2,39 @@ using Microsoft.Win32;
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Security;
 using System.Windows.Forms;
 
 namespace PuttyRun {
     internal static class Settings {
 
-        public static Boolean Installed {
-            get { return Medo.Configuration.Settings.Read("Installed", false); }
-            set {
-                if (value) { //enable writing
-                    Medo.Configuration.Settings.NoRegistryWrites = false;
-                    Medo.Windows.Forms.State.NoRegistryWrites = false;
-                    Medo.Configuration.Settings.Write("Installed", 1);
-                } else {
-                    try {
-                        using (var key = Registry.CurrentUser.OpenSubKey(@"Software\Josip Medved", true)) {
-                            key.DeleteSubKeyTree(Medo.Reflection.EntryAssembly.Product);
-                        }
-                    } catch (Exception) {
-                        Medo.Configuration.Settings.Write("Installed", 0);
+        public static bool NoRegistryWrites {
+            get {
+                try {
+                    using (var key = Registry.CurrentUser.OpenSubKey(Medo.Configuration.Settings.SubkeyPath)) {
+                        return (key == null);
                     }
-                    Medo.Configuration.Settings.NoRegistryWrites = true;
-                    Medo.Windows.Forms.State.NoRegistryWrites = true;
+                } catch (SecurityException) {
+                    return true;
                 }
             }
+            set {
+                try {
+                    if (value) { //remove subkey
+                        try {
+                            Registry.CurrentUser.DeleteSubKeyTree(Medo.Configuration.Settings.SubkeyPath);
+                        } catch (ArgumentException) { }
+                    } else {
+                        Registry.CurrentUser.CreateSubKey(Medo.Configuration.Settings.SubkeyPath);
+                    }
+                    Medo.Configuration.Settings.NoRegistryWrites = value;
+                    Medo.Windows.Forms.State.NoRegistryWrites = value;
+                    Medo.Diagnostics.ErrorReport.DisableAutomaticSaveToTemp = value;
+                } catch (IOException) {
+                } catch (SecurityException) {
+                } catch (UnauthorizedAccessException) { }
+            }
         }
-
-        public static Boolean NoRegistryWrites { get { return !Settings.Installed; } }
 
 
         public static Keys ActivationHotkey {

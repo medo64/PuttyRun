@@ -59,7 +59,7 @@ namespace PuttyRun {
             if (Medo.MessageBox.ShowQuestion(this, "Do you allow this program use of registry in order to save its settings?", MessageBoxButtons.YesNo) == DialogResult.Yes) {
                 btnAllowRegistry.Visible = false;
                 SetControlState(true);
-                Settings.Installed = true;
+                Settings.NoRegistryWrites = false;
             }
         }
 

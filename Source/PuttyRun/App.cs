@@ -26,6 +26,7 @@ namespace PuttyRun {
                 Medo.Application.UnhandledCatch.Attach();
 
                 Medo.Configuration.Settings.NoRegistryWrites = Settings.NoRegistryWrites;
+                Medo.Diagnostics.ErrorReport.DisableAutomaticSaveToTemp = Settings.NoRegistryWrites;
                 Medo.Windows.Forms.State.NoRegistryWrites = Settings.NoRegistryWrites;
 
                 Application.ApplicationExit += delegate(Object sender, EventArgs e) {
@@ -82,7 +83,6 @@ namespace PuttyRun {
 
 
         private static void UnhandledException(object sender, ThreadExceptionEventArgs e) {
-            if (Settings.Installed) { Medo.Diagnostics.ErrorReport.SaveToTemp(e.Exception); }
 #if !DEBUG
             Medo.Diagnostics.ErrorReport.ShowDialog(null, e.Exception, new Uri("http://jmedved.com/feedback/"));
 #else

@@ -127,9 +127,9 @@
             // 
             this.btnAllowRegistry.Location = new System.Drawing.Point(12, 165);
             this.btnAllowRegistry.Name = "btnAllowRegistry";
-            this.btnAllowRegistry.Size = new System.Drawing.Size(170, 25);
+            this.btnAllowRegistry.Size = new System.Drawing.Size(100, 25);
             this.btnAllowRegistry.TabIndex = 7;
-            this.btnAllowRegistry.Text = "Allow saving settings";
+            this.btnAllowRegistry.Text = "Allow save";
             this.btnAllowRegistry.UseVisualStyleBackColor = true;
             this.btnAllowRegistry.Visible = false;
             this.btnAllowRegistry.Click += new System.EventHandler(this.btnAllowRegistry_Click);
