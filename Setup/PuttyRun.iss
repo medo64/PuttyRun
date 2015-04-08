@@ -6,6 +6,12 @@
 #define AppBase        LowerCase(StringChange(AppName, ' ', ''))
 #define AppSetupFile   AppBase + StringChange(AppVersion, '.', '')
 
+#define AppVersionEx   StringChange(AppVersion, '0.00', '')
+#if "" != HgNode
+#  define AppVersionEx AppVersionEx + " (" + HgNode + ")"
+#endif
+
+
 [Setup]
 AppName={#AppName}
 AppVersion={#AppVersion}
@@ -14,7 +20,7 @@ AppPublisher={#AppCompany}
 AppPublisherURL=http://jmedved.com/{#AppBase}/
 AppCopyright={#AppCopyright}
 VersionInfoProductVersion={#AppVersion}
-VersionInfoProductTextVersion={#AppVersion}
+VersionInfoProductTextVersion={#AppVersionEx}
 VersionInfoVersion={#AppFileVersion}
 DefaultDirName={pf}\{#AppCompany}\{#AppName}
 OutputBaseFilename={#AppSetupFile}
@@ -34,11 +40,12 @@ ShowLanguageDialog=no
 SolidCompression=yes
 ChangesAssociations=no
 DisableWelcomePage=yes
-LicenseFile=..\Setup\License.txt
+LicenseFile=..\Setup\License.rtf
+
 
 [Messages]
-SetupAppTitle=Setup {#AppName} {#AppVersion}
-SetupWindowTitle=Setup {#AppName} {#AppVersion}
+SetupAppTitle=Setup {#AppName} {#AppVersionEx}
+SetupWindowTitle=Setup {#AppName} {#AppVersionEx}
 BeveledLabel=jmedved.com
 
 [Dirs]
@@ -60,3 +67,10 @@ Root: HKCU;  Subkey: "Software\Microsoft\Windows\CurrentVersion\Run";  ValueType
 [Run]
 Description: "View ReadMe.txt";         Filename: "{app}\ReadMe.txt";                         Flags: postinstall runasoriginaluser shellexec nowait skipifsilent unchecked
 Description: "Launch application now";  Filename: "{app}\PuttyRun.exe";   Parameters: "/setup";  Flags: postinstall nowait skipifsilent runasoriginaluser shellexec
+
+[Code]
+
+procedure InitializeWizard;
+begin
+  WizardForm.LicenseAcceptedRadio.Checked := True;
+end;
