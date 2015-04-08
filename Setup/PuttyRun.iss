@@ -53,6 +53,7 @@ Name: "{userappdata}\Josip Medved\PuttyRun";  Flags: uninsalwaysuninstall
 
 [Files]
 Source: "PuttyRun.exe";   DestDir: "{app}";                      Flags: ignoreversion;
+Source: "PuttyRun.pdb";   DestDir: "{app}";                      Flags: ignoreversion;
 Source: "ReadMe.txt";  DestDir: "{app}";  Attribs: readonly;  Flags: overwritereadonly uninsremovereadonly;
 
 [Icons]
