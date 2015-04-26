@@ -7,8 +7,8 @@
 #define AppSetupFile   AppBase + StringChange(AppVersion, '.', '')
 
 #define AppVersionEx   StringChange(AppVersion, '0.00', '')
-#if "" != HgNode
-#  define AppVersionEx AppVersionEx + " (" + HgNode + ")"
+#if "" != VersionHash
+#  define AppVersionEx AppVersionEx + " (" + VersionHash + ")"
 #endif
 
 
@@ -54,7 +54,8 @@ Name: "{userappdata}\Josip Medved\PuttyRun";  Flags: uninsalwaysuninstall
 [Files]
 Source: "PuttyRun.exe";   DestDir: "{app}";                      Flags: ignoreversion;
 Source: "PuttyRun.pdb";   DestDir: "{app}";                      Flags: ignoreversion;
-Source: "ReadMe.txt";  DestDir: "{app}";  Attribs: readonly;  Flags: overwritereadonly uninsremovereadonly;
+Source: "ReadMe.txt";     DestDir: "{app}";  Attribs: readonly;  Flags: overwritereadonly uninsremovereadonly;
+Source: "License.txt";    DestDir: "{app}";  Attribs: readonly;  Flags: overwritereadonly uninsremovereadonly;
 
 [Icons]
 Name: "{userstartmenu}\PuttyRun";  Filename: "{app}\PuttyRun.exe"
@@ -66,8 +67,8 @@ Root: HKCU;  Subkey: "Software\Josip Medved";                                   
 Root: HKCU;  Subkey: "Software\Microsoft\Windows\CurrentVersion\Run";  ValueType: string;  ValueName: "PuttyRun";   ValueData: """{app}\PuttyRun.exe"" /hide";  Flags: uninsdeletevalue
 
 [Run]
-Description: "View ReadMe.txt";         Filename: "{app}\ReadMe.txt";                         Flags: postinstall runasoriginaluser shellexec nowait skipifsilent unchecked
 Description: "Launch application now";  Filename: "{app}\PuttyRun.exe";   Parameters: "/setup";  Flags: postinstall nowait skipifsilent runasoriginaluser shellexec
+Description: "View ReadMe.txt";         Filename: "{app}\ReadMe.txt";                            Flags: postinstall runasoriginaluser shellexec nowait skipifsilent unchecked
 
 [Code]
 
